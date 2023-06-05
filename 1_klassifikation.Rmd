@@ -1,0 +1,129 @@
+---
+title: "Iris LDA and QDA"
+author: "Anders Thor Kellmer"
+output: html_document
+---
+
+## The iris  data
+```{r}
+library(MASS)
+set.seed(123)
+```
+
+The iris data set is a classical data set first studied by R. A. Fisher in 1936. It contains measurements of sepal and petal length and width for three different species of the iris plant.
+
+Load the data set. Rename the species to 1, 2 and 3 for simplicity.
+
+```{r load data}
+data(iris)
+X = iris[, 1:2]
+y = rep(0, nrow(iris)) 
+y[iris[, 5] == "setosa"] = 1
+y[iris[, 5] == "versicolor"] = 2
+y[iris[, 5] == "virginica"] = 3
+niris = data.frame(Species = y,
+                   SLength = X[, 1],
+                   SWidth = X[, 2])
+```
+
+Randomly split the data set in two data sets of equal size
+
+```{r split data}
+dt = sort(sample(nrow(niris), nrow(niris)*0.5))
+train = niris[dt, ]
+test = niris[-dt, ]
+```
+
+Fit the LDA and QDA models on the training set.
+
+```{r fit}
+lda.fit = lda(Species~., niris)
+qda.fit = qda(Species~., niris);
+lda.fit
+qda.fit
+```
+
+Predict on the test set using the fitted models.
+
+```{r predict}
+new.pred.lda = predict(lda.fit, test)
+new.pred.qda = predict(qda.fit, test)
+```
+
+Calculate the prediction error.
+
+```{r missclassification}
+miss_lda = mean(ifelse(test[, 1] == new.pred.lda$class, 0, 1))
+miss_qda = mean(ifelse(test[, 1] == new.pred.qda$class, 0, 1))
+miss_lda
+miss_qda
+```
+
+Generate a grid on a square that contains all observations.
+
+```{r grid}
+xmin = min(niris$SLength) - 1
+xmax = max(niris$SLength) + 1
+ymin = min(niris$SWidth) - 1
+ymax = max(niris$SWidth) + 1
+
+n_points = 150     
+x_grid = seq(xmin,xmax,length.out = n_points) 
+y_grid = seq(ymin,ymax,length.out = n_points) 
+```
+
+Plot the predicted classes along with the grid using LDA.
+```{r lda plot}
+par(mar = c(0.1, 0.1, 2, 0.1))
+plot(
+  X,
+  pch = y - 1,
+  col = y + 1,
+  main = "LDA",
+  yaxt = 'n',
+  xaxt = 'n'
+)
+
+for (j in 1:n_points) {
+  for (k in 1:n_points) {
+    new = data.frame(SLength = x_grid[j], SWidth = y_grid[k])
+    new.pred.lda = predict(lda.fit, new)
+    curr_obs = as.numeric(new.pred.lda$class)
+    points(x_grid[j],
+           y_grid[k],
+           col = curr_obs + 1,
+           pch = 3,
+           cex = 0.3)
+  }
+}
+# Red = Setosa, Green = Versicolor, Blue = Virginica
+```
+
+Plot the predicted classes along with the grid using QDA, where red is Setosa, green is Versicolor and blue is Virginica. 
+
+```{r qda plot}
+par(mar = c(0.1, 0.1, 2, 0.1))
+plot(
+  X,
+  pch = y - 1,
+  col = y + 1,
+  main = "QDA",
+  yaxt = 'n',
+  xaxt = 'n'
+)
+
+for (j in 1:n_points) {
+  for (k in 1:n_points) {
+    new = data.frame(SLength = x_grid[j], SWidth = y_grid[k])
+    new.pred.qda = predict(qda.fit, new)
+    curr_obs = as.numeric(new.pred.qda$class)
+    points(x_grid[j],
+           y_grid[k],
+           col = curr_obs + 1,
+           pch = 3,
+           cex = 0.3)
+  }
+}
+# Red = Setosa, Green = Versicolor, Blue = Virginica
+```
+
