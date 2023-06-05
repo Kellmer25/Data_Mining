@@ -45,7 +45,7 @@ Plot the fitted clusters.
 fviz_cluster(
   fit,
   data = iris[, 1:2],
-  palette = c(2, 3, 4),
+  palette = c(2, 4, 3),
   geom = "point",
   ellipse.type = "convex",
   ggtheme = theme_bw()
@@ -88,3 +88,14 @@ plot(
 # Red = Setosa, green = Versicolor and blue = Virginica
 ```
 
+```{r plot 2, echo = FALSE}
+fviz_cluster(
+  fit,
+  data = iris[, 1:2],
+  palette = c(2, 4, 3),
+  geom = "point",
+  ellipse.type = "convex",
+  ggtheme = theme_bw()
+)
+# 1 = Setosa, 2 = Versicolor and 3 = Virginica
+```
