@@ -1,0 +1,64 @@
+---
+title: "3. Regulariseret regression"
+author: "Anders Thor Kellmer"
+date: "2023-06-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+Setup dependencies
+
+```{r dependencies, message=FALSE}
+library(magrittr)
+library(dplyr)
+library(glmnet)
+set.seed(123)
+```
+
+Load data.
+
+```{r load data}
+data("mtcars")
+mtcars
+
+X = mtcars %>% select(-mpg) %>% as.matrix()
+y = mtcars %>% select(mpg) %>% scale(center = TRUE, scale = FALSE) %>% as.matrix()
+```
+
+Determine best lambda using cross validation.
+
+```{r determine lambda}
+lambda_seq = 10 ^ seq(-3, 5, length.out = 100)
+ridge_cv = cv.glmnet(
+  X,
+  y,
+  alpha = 0,
+  lambda = lambda_seq,
+  standardize = TRUE,
+  nfolds = 10
+)
+best_lambda = ridge_cv$lambda.min
+best_lambda
+```
+
+Plot of coefficients as a function of log(lambda).
+
+```{r plot all variables}
+model = glmnet(X, y, alpha = 0, lambda = lambda_seq, standardize = FALSE)
+plot(model, xvar = "lambda")
+legend("bottomright", lwd = 1, col = 1:6, legend = colnames(X), cex = 0.7)
+```
+
+Fit final model and check summary statistics.
+
+```{r final model}
+model = glmnet(X, y, alpha = 0, lambda = best_lambda, standardize = TRUE)
+y_hat = predict(model, X)
+t(y - y_hat) %*% (y - y_hat) %>% as.double() # RSS
+cor(y, y_hat)^2 %>% as.double() #R^2
+model$beta
+```
+

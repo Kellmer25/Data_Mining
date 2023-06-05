@@ -1,6 +1,7 @@
 ---
 title: "Klassification"
 author: "Anders Thor Kellmer"
+date: "2023-06-12"
 output: html_document
 ---
 
