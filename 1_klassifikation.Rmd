@@ -1,5 +1,5 @@
 ---
-title: "Iris LDA and QDA"
+title: "Klassification"
 author: "Anders Thor Kellmer"
 output: html_document
 ---
