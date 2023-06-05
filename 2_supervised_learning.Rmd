@@ -39,7 +39,7 @@ fit
 fit$size
 ```
 
-Plot data using Principal Component Analysis.
+Plot the fitted clusters.
 
 ```{r plot}
 fviz_cluster(
@@ -53,7 +53,7 @@ fviz_cluster(
 # 1 = Setosa, 2 = Versicolor and 3 = Virginica
 ```
 
-Calculate metric for missclassification.
+Calculate missclassification rates.
 
 ```{r missclassification}
 y = rep(0, nrow(iris)) 
