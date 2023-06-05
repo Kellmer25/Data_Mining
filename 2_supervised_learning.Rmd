@@ -1,0 +1,90 @@
+---
+title: "2. Unsupervised Learning"
+author: "Anders Thor Kellmer"
+date: "2023-06-12"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+Setup dependencies.
+
+```{r dependencies, message=FALSE}
+library(magrittr)
+library(factoextra)
+set.seed(123)
+```
+
+Load the data.
+
+```{r data}
+data("iris")
+df = scale(iris[, 1:2])
+head(df, 5)
+```
+
+Make screeplot.
+
+```{r optimal clusters}
+fviz_nbclust(df, kmeans, method = "wss")
+```
+
+Fit Kmeans on data with tre clusters og 25 different starting values.
+
+```{r fit model}
+fit = kmeans(df, centers = 3, nstart = 25)
+fit
+fit$size
+```
+
+Plot data using Principal Component Analysis.
+
+```{r plot}
+fviz_cluster(
+  fit,
+  data = iris[, 1:2],
+  palette = c(2, 3, 4),
+  geom = "point",
+  ellipse.type = "convex",
+  ggtheme = theme_bw()
+)
+# 1 = Setosa, 2 = Versicolor and 3 = Virginica
+```
+
+Calculate metric for missclassification.
+
+```{r missclassification}
+y = rep(0, nrow(iris)) 
+y[iris[, 5] == "setosa"] = 1
+y[iris[, 5] == "versicolor"] = 2
+y[iris[, 5] == "virginica"] = 3
+
+miss_km = mean(ifelse(y == fit$cluster, 0, 1))
+miss_km
+
+preds = data.frame(y, fit$cluster)
+colnames(preds) = c("sort", "pred")
+
+for (i in 1:3) {
+  ind = which(y == i)
+  miss_cluster = mean(ifelse(y[ind] == fit$cluster[ind], 0, 1))
+  paste(i, ":", miss_cluster) %>% print()
+}
+```
+
+Plot of scaled data.
+
+```{r data plot}
+plot(
+  scale(iris[, 1:2]),
+  pch = y - 1,
+  col = y + 1,
+  main = "Data",
+  yaxt = 'n',
+  xaxt = 'n'
+)
+# Red = Setosa, green = Versicolor and blue = Virginica
+```
+

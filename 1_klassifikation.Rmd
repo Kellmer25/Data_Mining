@@ -24,6 +24,7 @@ y[iris[, 5] == "virginica"] = 3
 niris = data.frame(Species = y,
                    SLength = X[, 1],
                    SWidth = X[, 2])
+head(niris, n = 5)
 ```
 
 Randomly split the data set in two data sets of equal size
