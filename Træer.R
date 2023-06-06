@@ -3,7 +3,7 @@ library(magrittr)
 library(dplyr)
 
 ### Opg 3 ----------------------------------------------------------------------
-df = read.csv("Lektion 8/day.csv")
+df = read.csv("day.csv")
 
 ### A
 library(rpart)

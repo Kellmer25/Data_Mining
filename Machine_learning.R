@@ -1,5 +1,5 @@
 library(neuralnet)
-day_data <- read.csv("C:/Users/vikto/Desktop/Uni/8. semester/Data mining/day.csv")
+day_data <- read.csv("day.csv")
 
 data <- day_data[c("cnt","atemp","hum","windspeed")]
 set.seed(1)

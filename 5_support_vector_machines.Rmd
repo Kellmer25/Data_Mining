@@ -1,0 +1,125 @@
+---
+title: "5. Support Vector Machines"
+author: "Anders Thor Kellmer"
+date: "2023-06-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+```
+
+Load dependencies.
+
+```{r dependencies, message=FALSE}
+library("e1071")
+library(GGally)
+library(ggplot2)
+```
+
+Exploratory analysis.
+
+```{r data import, message=FALSE}
+data("iris")
+head(iris, n = 5)
+ggpairs(iris, ggplot2::aes(colour = Species, alpha = 0.4))
+```
+
+### Linear SVM
+
+Fitting linear SVM on iris dataset.
+
+```{r model}
+svm_model <- svm(
+  Species ~ ., 
+  data = iris,
+  kernel = "linear"
+)
+```
+
+Plotting model in two dimensions using **petal_width** and **petal_length**.
+
+```{r}
+plot(
+  svm_model,
+  data = iris,
+  Petal.Width ~ Petal.Length,
+  slice = list(Sepal.Width = 3, Sepal.Length = 4)
+)
+```
+
+Calculate confusion matrix and missclassification rate.
+
+```{r}
+pred = predict(svm_model, iris)
+tab = table(Predicted = pred, Actual = iris$Species)
+tab
+1-sum(diag(tab)/sum(tab))
+```
+
+### Radial SVM
+
+Fitting radial SVM on iris dataset.
+
+```{r}
+svm_model = svm(
+  Species ~ ., 
+  data=iris,
+  kernel = "radial"
+)
+```
+
+Plotting model in two dimensions using **width** and **length**.
+
+```{r}
+plot(
+  svm_model, 
+  data = iris,
+  Petal.Width ~ Petal.Length,
+  slice = list(Sepal.Width = 3, Sepal.Length = 4) 
+)
+```
+
+Calculate confusion matrix and missclassification rate.
+
+```{r}
+pred = predict(svm_model, iris)
+tab = table(Predicted = pred, Actual = iris$Species)
+tab
+1-sum(diag(tab)/sum(tab))
+```
+
+### Tuning SVM
+```{r}
+tmodel = tune(
+  svm,
+  Species~., 
+  data = iris,
+  ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:7))
+)
+plot(tmodel)
+summary(tmodel)
+best_model <- tmodel$best.model
+best_model
+```
+
+Plot of the best model.
+
+```{r}
+plot(
+  best_model, 
+  data = iris,
+  Petal.Width ~ Petal.Length,
+  slice = list(Sepal.Width = 3, Sepal.Length = 4)  
+)
+```
+
+Confusion matrix and missclassification rate.
+
+```{r}
+pred_best_model = predict(best_model,iris)
+tab = table(Predicted = pred_best_model, Actual = iris$Species)
+tab
+1-sum(diag(tab)/sum(tab))
+```
+
