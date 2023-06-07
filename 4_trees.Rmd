@@ -27,7 +27,7 @@ data("airquality")
 str(airquality)
 ```
 
-Fit tree for classification.
+Fit tree.
 
 ```{r}
 tree = rpart(
