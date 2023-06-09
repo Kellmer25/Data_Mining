@@ -21,8 +21,8 @@ Load the data.
 
 ```{r data}
 data("iris")
+str(iris)
 df = scale(iris[, 1:2])
-head(df, 5)
 ```
 
 Make screeplot.
@@ -31,7 +31,7 @@ Make screeplot.
 fviz_nbclust(df, kmeans, method = "wss")
 ```
 
-Fit Kmeans on data with tre clusters og 25 different starting values.
+Fit Kmeans on data with tree clusters og 25 different starting values.
 
 ```{r fit model}
 fit = kmeans(df, centers = 3, nstart = 25)
@@ -81,10 +81,9 @@ plot(
   scale(iris[, 1:2]),
   pch = y - 1,
   col = y + 1,
-  main = "Data",
-  yaxt = 'n',
-  xaxt = 'n'
+  main = "Data"
 )
+grid()
 # Red = Setosa, green = Versicolor and blue = Virginica
 ```
 

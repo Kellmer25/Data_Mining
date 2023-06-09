@@ -5,13 +5,13 @@ date: "2023-06-12"
 output: html_document
 ---
 
-```{r setup, include=FALSE, warning = FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Setting up dependencies.
 
-```{r dependencies, warning = FALSE, message = FALSE}
+```{r dependencies, message = FALSE, warning = FALSE}
 library(magrittr)
 library(neuralnet)
 library(caret)
@@ -38,7 +38,7 @@ nnet = neuralnet(
   hidden = c(4, 3),
   linear.output = FALSE
 )
-plot(nnet)
+plot(nnet, rep = "best")
 ```
 
 Get predictions.

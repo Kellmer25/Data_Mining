@@ -22,7 +22,7 @@ Load data.
 
 ```{r load data}
 data("mtcars")
-mtcars
+head(mtcars, n = 10)
 
 X = mtcars %>% select(-mpg) %>% as.matrix()
 y = mtcars %>% select(mpg) %>% scale(center = TRUE, scale = FALSE) %>% as.matrix()

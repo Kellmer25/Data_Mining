@@ -6,8 +6,9 @@ output: html_document
 ---
 
 ## The iris  data
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(MASS)
+library(caret)
 set.seed(123)
 ```
 
@@ -17,6 +18,7 @@ Load the data set. Rename the species to 1, 2 and 3 for simplicity.
 
 ```{r load data}
 data(iris)
+str(iris)
 X = iris[, 1:2]
 y = rep(0, nrow(iris)) 
 y[iris[, 5] == "setosa"] = 1
@@ -25,13 +27,12 @@ y[iris[, 5] == "virginica"] = 3
 niris = data.frame(Species = y,
                    SLength = X[, 1],
                    SWidth = X[, 2])
-head(niris, n = 5)
 ```
 
-Randomly split the data set in two data sets of equal size
+Randomly split the data set.
 
 ```{r split data}
-dt = sort(sample(nrow(niris), nrow(niris)*0.5))
+dt = sort(sample(nrow(niris), nrow(niris)*0.80))
 train = niris[dt, ]
 test = niris[-dt, ]
 ```
@@ -39,8 +40,8 @@ test = niris[-dt, ]
 Fit the LDA and QDA models on the training set.
 
 ```{r fit}
-lda.fit = lda(Species~., niris)
-qda.fit = qda(Species~., niris);
+lda.fit = lda(Species ~ ., niris)
+qda.fit = qda(Species ~ ., niris);
 lda.fit
 qda.fit
 ```
@@ -52,13 +53,15 @@ new.pred.lda = predict(lda.fit, test)
 new.pred.qda = predict(qda.fit, test)
 ```
 
-Calculate the prediction error.
+Calculate confusion matrix and missclassification error.
 
 ```{r missclassification}
-miss_lda = mean(ifelse(test[, 1] == new.pred.lda$class, 0, 1))
-miss_qda = mean(ifelse(test[, 1] == new.pred.qda$class, 0, 1))
-miss_lda
-miss_qda
+
+confusionMatrix(as.factor(test[[1]]), as.factor(new.pred.lda$class))$table
+confusionMatrix(as.factor(test[[1]]), as.factor(new.pred.qda$class))$table
+
+mean(ifelse(test[, 1] == new.pred.lda$class, 0, 1))
+mean(ifelse(test[, 1] == new.pred.qda$class, 0, 1))
 ```
 
 Generate a grid on a square that contains all observations.
