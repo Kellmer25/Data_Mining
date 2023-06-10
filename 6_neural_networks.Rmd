@@ -22,9 +22,9 @@ Load data.
 ```{r}
 data("iris")
 str(iris)
-indexes = sample(1:nrow(iris), round(nrow(iris) * 0.85)) %>% sort()
-train = iris[indexes,]
-test = iris[-indexes,]
+indices = sample(1:nrow(iris), round(nrow(iris) * 0.8)) %>% sort()
+train = iris[indices,]
+test = iris[-indices,]
 xtest = test[,-5]
 ytest = test[, 5]
 ```
@@ -36,6 +36,7 @@ nnet = neuralnet(
   Species ~ .,
   train,
   hidden = c(4, 3),
+  act.fct = "tanh",
   linear.output = FALSE
 )
 plot(nnet, rep = "best")
@@ -58,8 +59,8 @@ yhat = data.frame(
 Make confusion matrix.
 
 ```{r}
-cm = confusionMatrix(as.factor(ytest), as.factor(yhat$yhat))
-cm$table
+confusionMatrix(as.factor(ytest), as.factor(yhat$yhat))$table
+mean(ifelse(as.character(iris[-indices, 5]) == yhat, 0, 1))
 ```
 
 

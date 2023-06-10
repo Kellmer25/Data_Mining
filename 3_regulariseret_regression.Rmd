@@ -29,6 +29,9 @@ y = mtcars %>% select(mpg) %>% scale(center = TRUE, scale = FALSE) %>% as.matrix
 ```
 
 Determine best lambda using cross validation.
+```{r}
+plot(1:nrow(mtcars), mtcars[["mpg"]])
+```
 
 ```{r determine lambda}
 lambda_seq = 10 ^ seq(-3, 5, length.out = 100)
@@ -44,10 +47,10 @@ best_lambda = ridge_cv$lambda.min
 best_lambda
 ```
 
-Plot of coefficients as a function of log(lambda).
+Plot of coefficients as a function of log(lambda).    
 
 ```{r plot all variables}
-model = glmnet(X, y, alpha = 0, lambda = lambda_seq, standardize = FALSE)
+model = glmnet(X, y, alpha = 0, lambda = lambda_seq, standardize = TRUE)
 plot(model, xvar = "lambda")
 legend("bottomright", lwd = 1, col = 1:6, legend = colnames(X), cex = 0.7)
 ```
@@ -61,4 +64,3 @@ t(y - y_hat) %*% (y - y_hat) %>% as.double() # RSS
 cor(y, y_hat)^2 %>% as.double() #R^2
 model$beta
 ```
-
