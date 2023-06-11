@@ -22,7 +22,7 @@ Exploratory analysis.
 
 ```{r data import, message=FALSE}
 data("iris")
-head(iris, n = 5)
+str(iris)
 ggpairs(iris, ggplot2::aes(colour = Species, alpha = 0.4))
 ```
 

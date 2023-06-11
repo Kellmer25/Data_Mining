@@ -9,7 +9,7 @@ output: html_document
 ```{r, warning=FALSE, message=FALSE}
 library(MASS)
 library(caret)
-set.seed(1234)
+set.seed(123)
 ```
 
 Load the data set. Rename the species to 1, 2 and 3 for simplicity.

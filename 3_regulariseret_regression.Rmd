@@ -29,9 +29,6 @@ y = mtcars %>% select(mpg) %>% scale(center = TRUE, scale = FALSE) %>% as.matrix
 ```
 
 Determine best lambda using cross validation.
-```{r}
-plot(1:nrow(mtcars), mtcars[["mpg"]])
-```
 
 ```{r determine lambda}
 lambda_seq = 10 ^ seq(-3, 5, length.out = 100)
